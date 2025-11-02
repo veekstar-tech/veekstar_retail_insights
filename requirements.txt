@@ -6,9 +6,7 @@ seaborn
 plotly
 altair
 openpyxl
-base64
 joblib
-warnings
 streamlit-authenticator==0.4.1
 scikit-learn
 lightgbm
@@ -20,7 +18,3 @@ python-dotenv
 pyyaml
 gitpython
 pydeck
-importlib.util
-SafeLoader
-yaml
-pathlib

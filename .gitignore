@@ -1,0 +1,29 @@
+# --- Python cache ---
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# --- Streamlit cache and local settings ---
+.streamlit/
+logs/
+.secrets.toml
+
+# --- Data and model files (large / private) ---
+data/
+outputs/
+model/
+*.csv
+*.pkl
+*.yaml
+*.md
+
+# --- OS & editor junk ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# --- Other temp ---
+*.log
+*.bak

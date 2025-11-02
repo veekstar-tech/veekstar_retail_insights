@@ -1,0 +1,44 @@
+/* Veekstar Royal Obsidian Animated Background */
+[data-testid="stAppViewContainer"] {
+  background: 
+    linear-gradient(120deg, rgba(0,0,0,0.95), rgba(20,15,0,0.8)),
+    url("/assets/bg_retail.jpg");
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center center;
+  color: #fff !important;
+  animation: shimmer 15s ease-in-out infinite alternate;
+}
+
+@keyframes shimmer {
+  0% {
+    filter: brightness(0.9) saturate(1);
+  }
+  50% {
+    filter: brightness(1.2) saturate(1.2);
+  }
+  100% {
+    filter: brightness(0.9) saturate(1);
+  }
+}
+
+/* Sidebar styling */
+[data-testid="stSidebar"] {
+  background: rgba(10, 10, 10, 0.7);
+  backdrop-filter: blur(12px);
+  box-shadow: 0px 0px 15px rgba(255, 215, 0, 0.2);
+}
+
+/* Chart and insight cards */
+div[data-testid="stVerticalBlock"] {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 215, 0, 0.1);
+  border-radius: 16px;
+  padding: 20px;
+  transition: all 0.3s ease-in-out;
+}
+
+div[data-testid="stVerticalBlock"]:hover {
+  box-shadow: 0 0 30px rgba(255, 200, 0, 0.2);
+  transform: scale(1.01);
+}

@@ -14,7 +14,7 @@ outputs/
 model/
 *.csv
 *.pkl
-*.yaml
+#*.yaml
 # Ignore markdowns in outputs folder only
 # --- OS & editor junk ---
 .DS_Store

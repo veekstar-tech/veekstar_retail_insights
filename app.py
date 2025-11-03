@@ -12,18 +12,15 @@ import importlib.util
 BASE = Path(__file__).resolve().parent
 ASSETS = BASE / "assets"
 BG_IMAGE = ASSETS / "bg_retail.jpg"
-
 # ---------------------------
 #  Load config.yaml (Credentials)
 # ---------------------------
 with open(BASE / "config.yaml") as file:
     config = yaml.load(file, Loader=SafeLoader)
-
 # ---------------------------
 #  Page Config
 # ---------------------------
 st.set_page_config(page_title="Veekstar Retail Intelligence", page_icon="💫", layout="wide")
-
 # ---------------------------
 #  Inject Custom CSS
 # ---------------------------
@@ -121,8 +118,8 @@ authenticator = stauth.Authenticate(
     config['cookie']['name'],
     config['cookie']['key'],
     config['cookie']['expiry_days'],
+    config['preauthorized']
 )
-
 # ---------------------------
 # ---------------------------
 #  Login Logic (Updated for Streamlit-Authenticator v0.4+)

@@ -9,11 +9,11 @@ __pycache__/
 logs/
 .secrets.toml 
 # --- Data and model files (large / private) ---
-data/
-outputs/
-model/
-*.csv
-*.pkl
+
+
+
+
+
 #*.yaml
 # Ignore markdowns in outputs folder only
 # --- OS & editor junk ---
@@ -22,7 +22,7 @@ Thumbs.db
 .vscode/
 .idea/
 # Ignore markdowns in outputs folder only
-outputs/*.md
+
 
 # --- Other temp ---
 *.log

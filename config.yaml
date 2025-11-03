@@ -1,8 +1,8 @@
 credentials:
   usernames:
     guest:
-      name: Demo Reviewer
       email: guest@veekstar.com
+      name: Demo Reviewer
       password: '$2b$12$3vZ8.v02SBVZ5sKFHpgMiu0tchgl./xHtF8tHWfPBJEDix3/eB6li'  # password = veekstar2025
 
 cookie:
@@ -10,6 +10,6 @@ cookie:
   key: veekstar_key
   expiry_days: 1
 
-#preauthorized:
- # emails:
-  #  - victor@example.com
+preauthorized:
+  emails:
+    - guest@veekstar.com

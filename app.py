@@ -124,8 +124,11 @@ authenticator = stauth.Authenticate(
 #  Login Logic (Updated for Streamlit-Authenticator v0.4+)
 # ---------------------------
 
+# ---------------------------
+#  Updated Login Logic (for Streamlit Authenticator v0.4+)
+# ---------------------------
 try:
-    name, authentication_status, username = authenticator.login(
+    authenticator.login(
         fields={
             "Form name": "💫 Veekstar Executive Login",
             "Username": "Username",
@@ -134,9 +137,16 @@ try:
         },
         location="main"
     )
+
+    # Access session state safely
+    authentication_status = st.session_state.get("authentication_status", None)
+    name = st.session_state.get("name", "")
+    username = st.session_state.get("username", "")
 except Exception as e:
     st.error(f"Authentication error: {e}")
-    name = authentication_status = username = None
+    authentication_status = None
+    name = username = ""
+
 
 # Show demo note ONLY on the login screen
 if authentication_status is None:

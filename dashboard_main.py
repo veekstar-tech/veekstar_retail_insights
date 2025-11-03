@@ -33,9 +33,11 @@ MODELS_DIR = BASE_DIR / "models"
 # -------------------------
 # Streamlit page config
 # -------------------------
-st.set_page_config(page_title="Veekstar Retail Intelligence",
-                   layout="wide",
-                   initial_sidebar_state="expanded")
+#st.set_page_config(page_title="Veekstar Retail Intelligence",
+#                   layout="wide",
+#                   initial_sidebar_state="expanded")
+if "page_config_set" not in st.session_state:
+    st.session_state["page_config_set"] = True
 
 # -------------------------
 # Safe CSS + JS + Image injection

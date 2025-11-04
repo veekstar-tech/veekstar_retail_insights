@@ -422,8 +422,29 @@ elif top_choice != st.session_state.page:
 # Assign the active page
 menu = st.session_state.page
 # ---------------------------------------------------------------
-
-
+# ---------- Mobile Header: Welcome + Logout ----------
+# Show "Welcome" and Logout only on mobile (no sidebar)
+if st._runtime.scriptrunner.get_script_run_ctx().session_data.page_config["layout"] == "wide":
+    pass  # Desktop already shows sidebar version
+else:
+    st.markdown(
+        f"""
+        <div style='background: rgba(0,0,0,0.65);
+                    padding: 0.6em 1em;
+                    border-radius: 10px;
+                    text-align: center;
+                    margin-bottom: 0.8em;
+                    color: #ffd27a;
+                    font-weight: 500;'>
+            👋 Welcome, {st.session_state.get('name', 'Executive User')} <br>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+    # Add a clean logout button below
+    logout_col = st.columns([3, 1])
+    with logout_col[1]:
+        st.button("Logout", key="mobile_logout", on_click=lambda: st.session_state.clear())
 # -------------------------
 # Helper: quick insight box
 # -------------------------

@@ -107,6 +107,18 @@ st.markdown(f"""
         50% {{ box-shadow: 0 0 26px rgba(255,210,122,0.95); }}
         100% {{ box-shadow: 0 0 12px rgba(255,210,122,0.45); }}
     }}
+    /* ---- Sidebar Styling (Match Main Background) ---- */
+[data-testid="stSidebar"] {{
+    background: rgba(0, 0, 0, 0.75) !important;
+    backdrop-filter: blur(8px);
+    border-right: 1px solid rgba(255,215,100,0.25);
+}}
+
+[data-testid="stSidebar"] * {{
+    color: #ffd27a !important;
+    font-family: 'Poppins', sans-serif;
+}}
+
     </style>
 """, unsafe_allow_html=True)
 
@@ -159,7 +171,9 @@ if authentication_status is None:
         """,
         unsafe_allow_html=True
     )
-
+# If mobile logout button was pressed, also log out authenticator session
+if "mobile_logout" in st.session_state and st.session_state["mobile_logout"]:
+    authenticator.logout("Logout", "main")
 # ---------------------------
 #  Conditional Dashboard Load
 # ---------------------------

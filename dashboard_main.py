@@ -41,8 +41,7 @@ if "page_config_set" not in st.session_state:
     st.session_state["page_config_set"] = True
 
 # -------------------------
-# # ---------- Responsive Mobile Menu & Desktop Sidebar Sync ----------
-# ensure session state keys
+# ---------- Responsive Mobile Menu & Desktop Sidebar Sync ----------
 if "menu_choice" not in st.session_state:
     st.session_state.menu_choice = None
 if "menu_open" not in st.session_state:
@@ -50,77 +49,92 @@ if "menu_open" not in st.session_state:
 if "display_mode" not in st.session_state:
     st.session_state.display_mode = "Auto"
 
-# Top bar: menu button (placed using columns so it sits top-right)
+# Top bar toggle button (for mobile)
 top_left, top_right = st.columns([0.92, 0.08])
 with top_right:
-    # This button toggles the mobile overlay
     if st.button("☰", key="veek_menu_toggle"):
         st.session_state.menu_open = not st.session_state.menu_open
 
-# Mobile overlay (appears when menu_open True). This is pure Streamlit UI (no fragile JS)
+# ----- MOBILE OVERLAY MENU -----
 if st.session_state.menu_open:
-    # Use a container so we can style it; it will appear in the app flow and overlay naturally on mobile
     with st.container():
         st.markdown(
             """
             <div style='position:relative; z-index:9999; padding:10px; margin-bottom:8px; 
                         background: rgba(10,10,10,0.92); border-radius:10px; border:1px solid rgba(255,184,77,0.12)'>
-            """, unsafe_allow_html=True
+            """,
+            unsafe_allow_html=True,
         )
-        # mobile navigation radio (same options as the sidebar)
-        mobile_choice = st.radio("Navigate (tap to open)", [
-            "Overview",
-            "Sales",
-            "Customers",
-            "Inventory",
-            "Performance",
-            "Forecasts",
-            "Business Insights"
-        ], index=0, key="mobile_nav")
+
+        # mobile navigation radio (unique key!)
+        mobile_choice = st.radio(
+            "Navigate (tap to open)",
+            [
+                "Overview",
+                "Sales",
+                "Customers",
+                "Inventory",
+                "Performance",
+                "Forecasts",
+                "Business Insights",
+            ],
+            index=0,
+            key="mobile_nav_radio",
+        )
         st.session_state.menu_choice = mobile_choice
 
-        # display mode control (keeps parity with sidebar control)
-        st.session_state.display_mode = st.radio("Display Mode", ["Auto", "Bright", "Dim"], index=0, key="mobile_display")
+        # display mode control (unique key!)
+        st.session_state.display_mode = st.radio(
+            "Display Mode",
+            ["Auto", "Bright", "Dim"],
+            index=0,
+            key="mobile_display_mode_radio",
+        )
 
-        # logout button (works because we inject authenticator from app.py)
+        # logout button
         if "authenticator" in globals():
-            if st.button("Logout (mobile)", key="mobile_logout"):
+            if st.button("Logout (mobile)", key="mobile_logout_btn"):
                 try:
                     authenticator.logout("Logout", "sidebar")
                 except Exception:
-                    # best-effort: just rerun if logout call fails
                     pass
                 st.experimental_rerun()
 
         st.markdown("</div>", unsafe_allow_html=True)
 
-# -------------------------
-# Now create the desktop sidebar (unchanged).
-# We keep this so desktops/tablets still use the familiar sidebar.
-# -------------------------
-st.sidebar.markdown("<div style='font-size:20px; font-weight:700; color:#ffc857'>Veekstar Retail Intelligence</div>", unsafe_allow_html=True)
-sidebar_choice = st.sidebar.radio("Navigate", [
-    "Overview",
-    "Sales",
-    "Customers",
-    "Inventory",
-    "Performance",
-    "Forecasts",
-    "Business Insights"
-])
+# ----- DESKTOP SIDEBAR -----
+st.sidebar.markdown(
+    "<div style='font-size:20px; font-weight:700; color:#ffc857'>Veekstar Retail Intelligence</div>",
+    unsafe_allow_html=True,
+)
 
-# Display-mode in sidebar (keeps parity)
-sidebar_display = st.sidebar.radio("Display Mode", ["Auto", "Bright", "Dim"], index=0)
+# unique key for sidebar radio too
+sidebar_choice = st.sidebar.radio(
+    "Navigate",
+    [
+        "Overview",
+        "Sales",
+        "Customers",
+        "Inventory",
+        "Performance",
+        "Forecasts",
+        "Business Insights",
+    ],
+    key="sidebar_nav_radio",
+)
 
-# Final menu selection logic: mobile overlay choice wins if present, otherwise sidebar
+# sidebar display mode control (unique key)
+sidebar_display = st.sidebar.radio(
+    "Display Mode", ["Auto", "Bright", "Dim"], index=0, key="sidebar_display_radio"
+)
+
+# merge logic
 menu = st.session_state.menu_choice if st.session_state.menu_choice else sidebar_choice
-
-# Synchronize display_mode variable globally (so the rest of the dashboard uses it)
-st.session_state.display_mode = st.session_state.display_mode if st.session_state.display_mode else sidebar_display
+st.session_state.display_mode = (
+    st.session_state.display_mode if st.session_state.display_mode else sidebar_display
+)
 display_mode = st.session_state.display_mode
 # -----------------------------------------------------------------
-
-# -------------------------
 # -------------------------
 # -------------------------
 # Background + Asset Injection (safe base64 method)

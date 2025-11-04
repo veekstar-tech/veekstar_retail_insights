@@ -20,14 +20,14 @@ def get_base64_image(image_path):
     with open(image_path, "rb") as f:
         encoded = base64.b64encode(f.read()).decode()
     return f"data:image/jpeg;base64,{encoded}"
-# --- Floating Sidebar Toggle Button for Mobile ---
-# --- Floating Sidebar Toggle Button for Mobile (Veekstar Version) ---
+# --- Veekstar Mobile Sidebar Toggle (Full Functional Version) ---
 st.markdown("""
 <style>
-.veek-mobile-nav {
+#veek-toggle {
   position: fixed;
-  top: 70px; /* Adjusted lower so it's visible */
-  right: 18px;
+  top: 70px;
+  right: 20px;
+  z-index: 99999;
   background: linear-gradient(145deg, #ffb93c, #ffcc66);
   color: black;
   font-weight: 800;
@@ -35,41 +35,53 @@ st.markdown("""
   border-radius: 50%;
   width: 55px;
   height: 55px;
-  font-size: 22px;
+  font-size: 24px;
   box-shadow: 0 0 15px rgba(255,185,60,0.6);
   cursor: pointer;
-  z-index: 999999; /* ensures it's above all */
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease-in-out;
 }
 
-.veek-mobile-nav:hover {
+#veek-toggle:hover {
   transform: scale(1.05);
   box-shadow: 0 0 20px rgba(255,185,60,0.8);
 }
 
 @media (min-width: 1024px) {
-  .veek-mobile-nav { display: none; }
+  #veek-toggle { display: none; }
 }
 </style>
 
-<button class="veek-mobile-nav" id="veek-toggle">☰</button>
+<button id="veek-toggle">☰</button>
 
 <script>
-const toggleButton = window.parent.document.getElementById("veek-toggle");
-if (toggleButton) {
-  toggleButton.addEventListener("click", function() {
-    const sidebar = window.parent.document.querySelector('[data-testid="stSidebar"]');
-    if (sidebar) {
-      const isHidden = sidebar.style.transform?.includes('-100%');
-      sidebar.style.transform = isHidden ? 'translateX(0%)' : 'translateX(-100%)';
-    }
-  });
-}
+window.addEventListener('load', function() {
+  const toggleButton = window.parent.document.getElementById("veek-toggle");
+  const sidebar = window.parent.document.querySelector('[data-testid="stSidebar"]');
+
+  if (toggleButton && sidebar) {
+    let sidebarVisible = false;
+
+    toggleButton.addEventListener("click", function() {
+      sidebarVisible = !sidebarVisible;
+
+      if (sidebarVisible) {
+        sidebar.style.transform = "translateX(0%)";
+        sidebar.style.transition = "transform 0.4s ease-in-out";
+        toggleButton.textContent = "×";
+      } else {
+        sidebar.style.transform = "translateX(-100%)";
+        sidebar.style.transition = "transform 0.4s ease-in-out";
+        toggleButton.textContent = "☰";
+      }
+    });
+  }
+});
 </script>
 """, unsafe_allow_html=True)
+
 
 # -------------------------
 # Base directories (robust)

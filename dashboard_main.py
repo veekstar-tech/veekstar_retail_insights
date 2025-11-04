@@ -21,6 +21,55 @@ def get_base64_image(image_path):
         encoded = base64.b64encode(f.read()).decode()
     return f"data:image/jpeg;base64,{encoded}"
 # --- Floating Sidebar Toggle Button for Mobile ---
+# --- Floating Sidebar Toggle Button for Mobile (Veekstar Version) ---
+st.markdown("""
+<style>
+.veek-mobile-nav {
+  position: fixed;
+  top: 70px; /* Adjusted lower so it's visible */
+  right: 18px;
+  background: linear-gradient(145deg, #ffb93c, #ffcc66);
+  color: black;
+  font-weight: 800;
+  border: none;
+  border-radius: 50%;
+  width: 55px;
+  height: 55px;
+  font-size: 22px;
+  box-shadow: 0 0 15px rgba(255,185,60,0.6);
+  cursor: pointer;
+  z-index: 999999; /* ensures it's above all */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease-in-out;
+}
+
+.veek-mobile-nav:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(255,185,60,0.8);
+}
+
+@media (min-width: 1024px) {
+  .veek-mobile-nav { display: none; }
+}
+</style>
+
+<button class="veek-mobile-nav" id="veek-toggle">☰</button>
+
+<script>
+const toggleButton = window.parent.document.getElementById("veek-toggle");
+if (toggleButton) {
+  toggleButton.addEventListener("click", function() {
+    const sidebar = window.parent.document.querySelector('[data-testid="stSidebar"]');
+    if (sidebar) {
+      const isHidden = sidebar.style.transform?.includes('-100%');
+      sidebar.style.transform = isHidden ? 'translateX(0%)' : 'translateX(-100%)';
+    }
+  });
+}
+</script>
+""", unsafe_allow_html=True)
 
 # -------------------------
 # Base directories (robust)
@@ -303,40 +352,7 @@ def normalize_df_columns(df: pd.DataFrame):
     if found_rev and found_rev != 'revenue':
         df = df.rename(columns={found_rev: 'revenue'})
     return df
-sidebar_toggle_css = """
-<style>
-.veek-mobile-nav {
-  position: fixed;
-  top: 16px;
-  right: 16px;
-  background-color: rgba(255,185,60,0.85);
-  color: black;
-  font-weight: 700;
-  border: none;
-  border-radius: 50%;
-  width: 46px;
-  height: 46px;
-  font-size: 20px;
-  box-shadow: 0 0 12px rgba(255,185,60,0.4);
-  z-index: 9999;
-}
-@media (min-width: 1024px) {
-  .veek-mobile-nav { display: none; }
-}
-</style>
-<button class="veek-mobile-nav" onclick="toggleSidebar()">☰</button>
-<script>
-function toggleSidebar() {
-  const sidebar = window.parent.document.querySelector('[data-testid="stSidebar"]');
-  if (sidebar) {
-    const isHidden = sidebar.style.transform?.includes('-100%');
-    sidebar.style.transform = isHidden ? 'translateX(0%)' : 'translateX(-100%)';
-  }
-}
-</script>
-"""
 
-st.markdown(sidebar_toggle_css, unsafe_allow_html=True)
 # -------------------------
 # Load main cleaned dataset (Veekstar_Retail_Cleaned.csv preferred)
 # -------------------------

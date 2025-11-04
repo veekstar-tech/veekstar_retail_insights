@@ -223,40 +223,7 @@ if bg_url is None:
 # -------------------------
 # End header - continue to Page config and rest of file
 
-sidebar_toggle_css = """
-<style>
-.veek-mobile-nav {
-  position: fixed;
-  top: 16px;
-  right: 16px;
-  background-color: rgba(255,185,60,0.85);
-  color: black;
-  font-weight: 700;
-  border: none;
-  border-radius: 50%;
-  width: 46px;
-  height: 46px;
-  font-size: 20px;
-  box-shadow: 0 0 12px rgba(255,185,60,0.4);
-  z-index: 9999;
-}
-@media (min-width: 1024px) {
-  .veek-mobile-nav { display: none; }
-}
-</style>
-<button class="veek-mobile-nav" onclick="toggleSidebar()">☰</button>
-<script>
-function toggleSidebar() {
-  const sidebar = window.parent.document.querySelector('[data-testid="stSidebar"]');
-  if (sidebar) {
-    const isHidden = sidebar.style.transform?.includes('-100%');
-    sidebar.style.transform = isHidden ? 'translateX(0%)' : 'translateX(-100%)';
-  }
-}
-</script>
-"""
 
-st.markdown(sidebar_toggle_css, unsafe_allow_html=True)
 # -------------------------
 # Page config
 # -------------------------
@@ -336,7 +303,40 @@ def normalize_df_columns(df: pd.DataFrame):
     if found_rev and found_rev != 'revenue':
         df = df.rename(columns={found_rev: 'revenue'})
     return df
+sidebar_toggle_css = """
+<style>
+.veek-mobile-nav {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  background-color: rgba(255,185,60,0.85);
+  color: black;
+  font-weight: 700;
+  border: none;
+  border-radius: 50%;
+  width: 46px;
+  height: 46px;
+  font-size: 20px;
+  box-shadow: 0 0 12px rgba(255,185,60,0.4);
+  z-index: 9999;
+}
+@media (min-width: 1024px) {
+  .veek-mobile-nav { display: none; }
+}
+</style>
+<button class="veek-mobile-nav" onclick="toggleSidebar()">☰</button>
+<script>
+function toggleSidebar() {
+  const sidebar = window.parent.document.querySelector('[data-testid="stSidebar"]');
+  if (sidebar) {
+    const isHidden = sidebar.style.transform?.includes('-100%');
+    sidebar.style.transform = isHidden ? 'translateX(0%)' : 'translateX(-100%)';
+  }
+}
+</script>
+"""
 
+st.markdown(sidebar_toggle_css, unsafe_allow_html=True)
 # -------------------------
 # Load main cleaned dataset (Veekstar_Retail_Cleaned.csv preferred)
 # -------------------------

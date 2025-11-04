@@ -20,7 +20,7 @@ with open(BASE / "config.yaml") as file:
 # ---------------------------
 #  Page Config
 # ---------------------------
-st.set_page_config(page_title="Veekstar Retail Intelligence", page_icon="💫", layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(page_title="Veekstar Retail Intelligence", page_icon="💫", layout="wide")
 # ---------------------------
 #  Inject Custom CSS
 # ---------------------------

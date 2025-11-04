@@ -41,99 +41,46 @@ if "page_config_set" not in st.session_state:
     st.session_state["page_config_set"] = True
 
 # -------------------------
-# ---------- Responsive Mobile Menu & Desktop Sidebar Sync ----------
-if "menu_choice" not in st.session_state:
-    st.session_state.menu_choice = None
-if "menu_open" not in st.session_state:
-    st.session_state.menu_open = False
-if "display_mode" not in st.session_state:
-    st.session_state.display_mode = "Auto"
+# ---------- Unified navigation (replace old sidebar radio) ----------
+nav_options = ["Overview", "Sales", "Customers", "Inventory", "Performance", "Forecasts", "Business Insights"]
 
-# Top bar toggle button (for mobile)
-top_left, top_right = st.columns([0.92, 0.08])
-with top_right:
-    if st.button("☰", key="veek_menu_toggle"):
-        st.session_state.menu_open = not st.session_state.menu_open
+# Ensure a single canonical page variable in session_state
+if "page" not in st.session_state:
+    st.session_state["page"] = "Overview"
 
-# ----- MOBILE OVERLAY MENU -----
-if st.session_state.menu_open:
-    with st.container():
-        st.markdown(
-            """
-            <div style='position:relative; z-index:9999; padding:10px; margin-bottom:8px; 
-                        background: rgba(10,10,10,0.92); border-radius:10px; border:1px solid rgba(255,184,77,0.12)'>
-            """,
-            unsafe_allow_html=True,
-        )
+# Sidebar header (keep your visual)
+st.sidebar.markdown("<div style='font-size:20px; font-weight:700; color:#ffc857'>Veekstar Retail Intelligence</div>", unsafe_allow_html=True)
 
-        # mobile navigation radio (unique key!)
-        mobile_choice = st.radio(
-            "Navigate (tap to open)",
-            [
-                "Overview",
-                "Sales",
-                "Customers",
-                "Inventory",
-                "Performance",
-                "Forecasts",
-                "Business Insights",
-            ],
-            index=0,
-            key="mobile_nav_radio",
-        )
-        st.session_state.menu_choice = mobile_choice
+# Callback to sync radio -> page
+def _sync_nav():
+    st.session_state["page"] = st.session_state.get("navigate_radio", st.session_state["page"])
 
-        # display mode control (unique key!)
-        st.session_state.display_mode = st.radio(
-            "Display Mode",
-            ["Auto", "Bright", "Dim"],
-            index=0,
-            key="mobile_display_mode_radio",
-        )
-
-        # logout button
-        if "authenticator" in globals():
-            if st.button("Logout (mobile)", key="mobile_logout_btn"):
-                try:
-                    authenticator.logout("Logout", "sidebar")
-                except Exception:
-                    pass
-                st.experimental_rerun()
-
-        st.markdown("</div>", unsafe_allow_html=True)
-
-# ----- DESKTOP SIDEBAR -----
-st.sidebar.markdown(
-    "<div style='font-size:20px; font-weight:700; color:#ffc857'>Veekstar Retail Intelligence</div>",
-    unsafe_allow_html=True,
+# Sidebar radio with a unique key and on_change callback (prevents duplicate element id)
+st.sidebar.radio(
+    label="Navigate",
+    options=nav_options,
+    index=nav_options.index(st.session_state["page"]) if st.session_state["page"] in nav_options else 0,
+    key="navigate_radio",
+    on_change=_sync_nav
 )
 
-# unique key for sidebar radio too
-sidebar_choice = st.sidebar.radio(
-    "Navigate",
-    [
-        "Overview",
-        "Sales",
-        "Customers",
-        "Inventory",
-        "Performance",
-        "Forecasts",
-        "Business Insights",
-    ],
-    key="sidebar_nav_radio",
-)
+# Also expose a compact top select for small screens (optional, safe — unique key)
+# This selectbox will not duplicate the radio (different key) and will update session_state.page
+def _sync_top():
+    st.session_state["page"] = st.session_state.get("top_nav", st.session_state["page"])
 
-# sidebar display mode control (unique key)
-sidebar_display = st.sidebar.radio(
-    "Display Mode", ["Auto", "Bright", "Dim"], index=0, key="sidebar_display_radio"
+# Render a top compact selector only for very narrow layouts (it won't show duplicate IDs)
+st.selectbox(
+    label="",
+    options=nav_options,
+    index=nav_options.index(st.session_state["page"]) if st.session_state["page"] in nav_options else 0,
+    key="top_nav",
+    on_change=_sync_top,
+    help="Use this to navigate on mobile"
 )
-
-# merge logic
-menu = st.session_state.menu_choice if st.session_state.menu_choice else sidebar_choice
-st.session_state.display_mode = (
-    st.session_state.display_mode if st.session_state.display_mode else sidebar_display
-)
-display_mode = st.session_state.display_mode
+# Now use the canonical page variable
+menu = st.session_state["page"]
+# ---------- end unified navigation ----------
 # -----------------------------------------------------------------
 # -------------------------
 # -------------------------

@@ -41,46 +41,7 @@ if "page_config_set" not in st.session_state:
     st.session_state["page_config_set"] = True
 
 # -------------------------
-# ---------- Unified navigation (replace old sidebar radio) ----------
-nav_options = ["Overview", "Sales", "Customers", "Inventory", "Performance", "Forecasts", "Business Insights"]
 
-# Ensure a single canonical page variable in session_state
-if "page" not in st.session_state:
-    st.session_state["page"] = "Overview"
-
-# Sidebar header (keep your visual)
-st.sidebar.markdown("<div style='font-size:20px; font-weight:700; color:#ffc857'>Veekstar Retail Intelligence</div>", unsafe_allow_html=True)
-
-# Callback to sync radio -> page
-def _sync_nav():
-    st.session_state["page"] = st.session_state.get("navigate_radio", st.session_state["page"])
-
-# Sidebar radio with a unique key and on_change callback (prevents duplicate element id)
-st.sidebar.radio(
-    label="Navigate",
-    options=nav_options,
-    index=nav_options.index(st.session_state["page"]) if st.session_state["page"] in nav_options else 0,
-    key="navigate_radio",
-    on_change=_sync_nav
-)
-
-# Also expose a compact top select for small screens (optional, safe — unique key)
-# This selectbox will not duplicate the radio (different key) and will update session_state.page
-def _sync_top():
-    st.session_state["page"] = st.session_state.get("top_nav", st.session_state["page"])
-
-# Render a top compact selector only for very narrow layouts (it won't show duplicate IDs)
-st.selectbox(
-    label="",
-    options=nav_options,
-    index=nav_options.index(st.session_state["page"]) if st.session_state["page"] in nav_options else 0,
-    key="top_nav",
-    on_change=_sync_top,
-    help="Use this to navigate on mobile"
-)
-# Now use the canonical page variable
-menu = st.session_state["page"]
-# ---------- end unified navigation ----------
 # -----------------------------------------------------------------
 # -------------------------
 # -------------------------
@@ -430,31 +391,38 @@ else:
 # -------------------------
 # Sidebar navigation
 # -------------------------
-st.markdown("""
-    <style>
-        /* Make top nav look sleek when sidebar used */
-        .stSidebar { background: transparent; }
-    </style>
-""", unsafe_allow_html=True)
-st.sidebar.markdown("<div style='font-size:20px; font-weight:700; color:#ffc857'>Veekstar Retail Intelligence</div>", unsafe_allow_html=True)
-menu = st.sidebar.radio("Navigate", [
-    "Overview",
-    "Sales",
-    "Customers",
-    "Inventory",
-    "Performance",   # newly added section
-    "Forecasts",
+# ---------- Clean Unified Navigation (Mobile + Desktop) ----------
+# Define available pages
+nav_options = [
+    "Overview", 
+    "Sales", 
+    "Customers", 
+    "Inventory", 
+    "Performance", 
+    "Forecasts", 
     "Business Insights"
-])
-st.markdown("""
-<div style='text-align:center; margin-top:-20px; margin-bottom:15px;'>
-  <h3 style='color:#FFD27A; font-weight:700;'>Veekstar Retail Insights</h3>
-  <p style='color:#ccc; font-size:13px;'>
-     An Executive Analytics Dashboard built with <b>Streamlit</b><br>
-     <em>Powered by Victor Analytics</em>
-  </p>
-</div>
-""", unsafe_allow_html=True)
+]
+
+# Initialize session page if missing
+if "page" not in st.session_state:
+    st.session_state.page = "Overview"
+
+# Render sidebar (desktop)
+sidebar_choice = st.sidebar.radio("Navigate", nav_options, index=nav_options.index(st.session_state.page))
+
+# Render top dropdown (mobile) — unique key, no duplication
+top_choice = st.selectbox("Navigate", nav_options, index=nav_options.index(st.session_state.page), key="top_nav_mobile")
+
+# Detect which one was used last
+if sidebar_choice != st.session_state.page:
+    st.session_state.page = sidebar_choice
+elif top_choice != st.session_state.page:
+    st.session_state.page = top_choice
+
+# Assign the active page
+menu = st.session_state.page
+# ---------------------------------------------------------------
+
 
 # -------------------------
 # Helper: quick insight box

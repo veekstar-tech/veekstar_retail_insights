@@ -20,67 +20,6 @@ def get_base64_image(image_path):
     with open(image_path, "rb") as f:
         encoded = base64.b64encode(f.read()).decode()
     return f"data:image/jpeg;base64,{encoded}"
-# --- Veekstar Mobile Sidebar Toggle (Full Functional Version) ---
-st.markdown("""
-<style>
-#veek-toggle {
-  position: fixed;
-  top: 70px;
-  right: 20px;
-  z-index: 99999;
-  background: linear-gradient(145deg, #ffb93c, #ffcc66);
-  color: black;
-  font-weight: 800;
-  border: none;
-  border-radius: 50%;
-  width: 55px;
-  height: 55px;
-  font-size: 24px;
-  box-shadow: 0 0 15px rgba(255,185,60,0.6);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease-in-out;
-}
-
-#veek-toggle:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 20px rgba(255,185,60,0.8);
-}
-
-@media (min-width: 1024px) {
-  #veek-toggle { display: none; }
-}
-</style>
-
-<button id="veek-toggle">☰</button>
-
-<script>
-window.addEventListener('load', function() {
-  const toggleButton = window.parent.document.getElementById("veek-toggle");
-  const sidebar = window.parent.document.querySelector('[data-testid="stSidebar"]');
-
-  if (toggleButton && sidebar) {
-    let sidebarVisible = false;
-
-    toggleButton.addEventListener("click", function() {
-      sidebarVisible = !sidebarVisible;
-
-      if (sidebarVisible) {
-        sidebar.style.transform = "translateX(0%)";
-        sidebar.style.transition = "transform 0.4s ease-in-out";
-        toggleButton.textContent = "×";
-      } else {
-        sidebar.style.transform = "translateX(-100%)";
-        sidebar.style.transition = "transform 0.4s ease-in-out";
-        toggleButton.textContent = "☰";
-      }
-    });
-  }
-});
-</script>
-""", unsafe_allow_html=True)
 
 
 # -------------------------
@@ -102,7 +41,85 @@ if "page_config_set" not in st.session_state:
     st.session_state["page_config_set"] = True
 
 # -------------------------
-# Safe CSS + JS + Image injection
+# # ---------- Responsive Mobile Menu & Desktop Sidebar Sync ----------
+# ensure session state keys
+if "menu_choice" not in st.session_state:
+    st.session_state.menu_choice = None
+if "menu_open" not in st.session_state:
+    st.session_state.menu_open = False
+if "display_mode" not in st.session_state:
+    st.session_state.display_mode = "Auto"
+
+# Top bar: menu button (placed using columns so it sits top-right)
+top_left, top_right = st.columns([0.92, 0.08])
+with top_right:
+    # This button toggles the mobile overlay
+    if st.button("☰", key="veek_menu_toggle"):
+        st.session_state.menu_open = not st.session_state.menu_open
+
+# Mobile overlay (appears when menu_open True). This is pure Streamlit UI (no fragile JS)
+if st.session_state.menu_open:
+    # Use a container so we can style it; it will appear in the app flow and overlay naturally on mobile
+    with st.container():
+        st.markdown(
+            """
+            <div style='position:relative; z-index:9999; padding:10px; margin-bottom:8px; 
+                        background: rgba(10,10,10,0.92); border-radius:10px; border:1px solid rgba(255,184,77,0.12)'>
+            """, unsafe_allow_html=True
+        )
+        # mobile navigation radio (same options as the sidebar)
+        mobile_choice = st.radio("Navigate (tap to open)", [
+            "Overview",
+            "Sales",
+            "Customers",
+            "Inventory",
+            "Performance",
+            "Forecasts",
+            "Business Insights"
+        ], index=0, key="mobile_nav")
+        st.session_state.menu_choice = mobile_choice
+
+        # display mode control (keeps parity with sidebar control)
+        st.session_state.display_mode = st.radio("Display Mode", ["Auto", "Bright", "Dim"], index=0, key="mobile_display")
+
+        # logout button (works because we inject authenticator from app.py)
+        if "authenticator" in globals():
+            if st.button("Logout (mobile)", key="mobile_logout"):
+                try:
+                    authenticator.logout("Logout", "sidebar")
+                except Exception:
+                    # best-effort: just rerun if logout call fails
+                    pass
+                st.experimental_rerun()
+
+        st.markdown("</div>", unsafe_allow_html=True)
+
+# -------------------------
+# Now create the desktop sidebar (unchanged).
+# We keep this so desktops/tablets still use the familiar sidebar.
+# -------------------------
+st.sidebar.markdown("<div style='font-size:20px; font-weight:700; color:#ffc857'>Veekstar Retail Intelligence</div>", unsafe_allow_html=True)
+sidebar_choice = st.sidebar.radio("Navigate", [
+    "Overview",
+    "Sales",
+    "Customers",
+    "Inventory",
+    "Performance",
+    "Forecasts",
+    "Business Insights"
+])
+
+# Display-mode in sidebar (keeps parity)
+sidebar_display = st.sidebar.radio("Display Mode", ["Auto", "Bright", "Dim"], index=0)
+
+# Final menu selection logic: mobile overlay choice wins if present, otherwise sidebar
+menu = st.session_state.menu_choice if st.session_state.menu_choice else sidebar_choice
+
+# Synchronize display_mode variable globally (so the rest of the dashboard uses it)
+st.session_state.display_mode = st.session_state.display_mode if st.session_state.display_mode else sidebar_display
+display_mode = st.session_state.display_mode
+# -----------------------------------------------------------------
+
 # -------------------------
 # -------------------------
 # -------------------------

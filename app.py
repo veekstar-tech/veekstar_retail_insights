@@ -169,12 +169,14 @@ if authentication_status:
 
     dashboard_path = BASE / "dashboard_main.py"
     if dashboard_path.exists():
-        spec = importlib.util.spec_from_file_location("dashboard_main", dashboard_path)
-        dashboard = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(dashboard)
+      spec = importlib.util.spec_from_file_location("dashboard_main", dashboard_path)
+      dashboard = importlib.util.module_from_spec(spec)
+# make authenticator available inside dashboard_main as a global variable
+      dashboard.authenticator = authenticator
+      spec.loader.exec_module(dashboard)
+
     else:
         st.error("❌ Dashboard file not found (dashboard_main.py missing).")
-
 elif authentication_status is False:
     st.error("❌ Incorrect username or password.")
 else:

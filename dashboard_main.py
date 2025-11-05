@@ -433,116 +433,37 @@ if st.session_state.get("is_mobile", False):
         "Business Insights",
         "🚪 Logout"
     ]
-    st.markdown("""
-    <div style="
-        background: linear-gradient(90deg, #141E30, #243B55);
-        padding: 0.4em 1em;
-        border-radius: 10px;
-        color: #ffd27a;
-        font-weight: 500;
-        text-align: center;
-        margin-bottom: 0.8em;">
-        Veekstar Navigation
-    </div>
-""", unsafe_allow_html=True)
-    
-    # --- BEGIN: NAV + SIDEBAR BACKGROUND IMAGE (robust: raw URL -> base64 fallback) ---
-from pathlib import Path
-import base64
-import requests
-
-# prefer GitHub raw URL (NO /tree/). update if your repo or branch differs.
-RAW_IMG_URL = "https://raw.githubusercontent.com/veekstar-tech/veekstar_retail_insights/main/assets/bg_retail.jpg"
-LOCAL_ASSET = Path(__file__).resolve().parent / "assets" / "bg_retail.jpg"
-
-def get_remote_image_ok(url):
-    try:
-        # lightweight HEAD-like check (requests uses GET here but small)
-        r = requests.get(url, timeout=4, stream=True)
-        return r.status_code == 200 and 'image' in r.headers.get('Content-Type', '')
-    except Exception:
-        return False
-
-def get_base64_from_local(path: Path):
-    try:
-        with open(path, "rb") as f:
-            return base64.b64encode(f.read()).decode()
-    except Exception:
-        return None
-
-# choose final image source: remote raw URL if valid, otherwise base64 from local file
-if get_remote_image_ok(RAW_IMG_URL):
-    bg_image_css_url = RAW_IMG_URL
-    use_data_url = False
-else:
-    b64 = get_base64_from_local(LOCAL_ASSET)
-    if b64:
-        bg_image_css_url = f"data:image/jpeg;base64,{b64}"
-        use_data_url = True
-    else:
-        bg_image_css_url = None
-        use_data_url = False
-
-if bg_image_css_url:
-    nav_bg_css = f"""
-    <style>
-    /* unify horizontal nav / dropdown / sidebar to use same bg image with dark overlay */
-    /* Horizontal navigation container (selectbox / custom dropdown) */
-    .stSelectbox, .stSelectbox > div, div[role="button"][data-testid="stHorizontalBlock"] {{
-        background:
-            linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
-            url("{bg_image_css_url}") center/cover no-repeat !important;
-        border-radius: 10px !important;
-        color: #ffd27a !important;
-        border: 1px solid rgba(255,215,122,0.08) !important;
-    }}
-
-    /* Listbox / dropdown options (when open) */
-    ul[role="listbox"], div[role="listbox"] {{
-        background:
-            linear-gradient(rgba(0,0,0,0.72), rgba(0,0,0,0.72)),
-            url("{bg_image_css_url}") center/cover no-repeat !important;
-        color: #fff !important;
-        border-radius: 8px !important;
-    }}
-
-    /* Sidebar background */
-    [data-testid="stSidebar"] {{
-        background:
-            linear-gradient(rgba(0,0,0,0.66), rgba(0,0,0,0.66)),
-            url("{bg_image_css_url}") center/cover no-repeat !important;
-        background-attachment: fixed !important;
-        color: #ffd27a !important;
-    }}
-
-    /* Ensure text and interactive items are readable */
-    [data-testid="stSidebar"] * {{
-        color: #ffd27a !important;
-    }}
-
-    /* Remove default white background on Streamlit's selectbox container */
-    .css-1v0mbdj .stSelectbox, .css-1v0mbdj select {{
-        background: transparent !important;
-    }}
-
-    /* Option hover & focus */
-    li[role="option"]:hover, li[role="option"][aria-selected="true"] {{
-        background-color: rgba(255,210,122,0.08) !important;
-    }}
-
-    /* small tweak for desktop where Streamlit may force white on elements */
-    .stSelectbox, .stSelectbox > div, div[role="button"][data-testid="stHorizontalBlock"] {{
-        -webkit-backdrop-filter: blur(4px) !important;
-        backdrop-filter: blur(4px) !important;
-    }}
-
-    /* mobile-specific: make items touch-friendly */
-    @media (max-width: 768px) {{
-        ul[role="listbox"] li[role="option"] {{ padding: 12px 16px !important; }}
-    }}
-    </style>
+    # Custom style for navigation background
+    st.markdown(
     """
-    st.markdown(nav_bg_css, unsafe_allow_html=True)
+    <style>
+    /* Apply background image + overlay to navigation bar */
+    div[data-testid="stHorizontalBlock"] {
+        background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+                    url("https://raw.githubusercontent.com/veekstar-tech/veekstar_retail_insights/main/assets/bg_retail.jpg");
+        background-size: cover !important;
+        background-position: center !important;
+        border-radius: 10px;
+        padding: 8px 16px;
+    }
+
+    /* Adjust dropdown text color for contrast */
+    div[data-testid="stHorizontalBlock"] * {
+        color: #f8f9fa !important;
+    }
+
+    /* Optional: Add subtle glow to active item */
+    div[data-testid="stHorizontalBlock"] [aria-selected="true"] {
+        background-color: rgba(255,255,255,0.15) !important;
+        border-radius: 6px;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+    
+
 # --- END: NAV + SIDEBAR BACKGROUND IMAGE (robust) ---
 
     menu = st.selectbox("Navigate", options)
@@ -574,6 +495,34 @@ else:
         "Forecasts",
         "Business Insights"
     ])
+# Custom style for navigation background
+    t.markdown(
+    """
+    <style>
+    /* Apply background image + overlay to navigation bar */
+    div[data-testid="stHorizontalBlock"] {
+        background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+                    url("https://raw.githubusercontent.com/veekstar-tech/veekstar_retail_insights/main/assets/bg_retail.jpg");
+        background-size: cover !important;
+        background-position: center !important;
+        border-radius: 10px;
+        padding: 8px 16px;
+    }
+
+    /* Adjust dropdown text color for contrast */
+    div[data-testid="stHorizontalBlock"] * {
+        color: #f8f9fa !important;
+    }
+
+    /* Optional: Add subtle glow to active item */
+    div[data-testid="stHorizontalBlock"] [aria-selected="true"] {
+        background-color: rgba(255,255,255,0.15) !important;
+        border-radius: 6px;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
     if st.sidebar.button("🚪 Logout"):
         st.session_state.clear()

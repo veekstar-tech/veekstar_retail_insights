@@ -20,7 +20,10 @@ def get_base64_image(image_path):
     with open(image_path, "rb") as f:
         encoded = base64.b64encode(f.read()).decode()
     return f"data:image/jpeg;base64,{encoded}"
-
+import streamlit.runtime.scriptrunner as scriptrunner
+ctx = scriptrunner.get_script_run_ctx()
+if ctx is None:
+    st.stop()
 from streamlit_javascript import st_javascript
 
 # Detect device width (mobile vs desktop)
@@ -450,7 +453,7 @@ if st.session_state.get("is_mobile", False):
             background-image: linear-gradient(
                 rgba(0, 0, 0, 0.55),
                 rgba(0, 0, 0, 0.55)
-            ), url("/assets/bg_retail.jpg");
+            ), url("https://github.com/veekstar-tech/veekstar_retail_insights/blob/main/assets/bg_retail.jpg");
             background-size: cover !important;
             background-position: center !important;
             color: #ffd27a !important;
@@ -469,7 +472,7 @@ if st.session_state.get("is_mobile", False):
             background-image: linear-gradient(
                 rgba(0, 0, 0, 0.65),
                 rgba(0, 0, 0, 0.65)
-            ),url("/assets/bg_retail.jpg") ;
+            ),url("https://github.com/veekstar-tech/veekstar_retail_insights/blob/main/assets/bg_retail.jpg") ;
             background-size: cover !important;
             background-position: center !important;
             border-radius: 8px !important;

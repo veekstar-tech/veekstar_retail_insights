@@ -438,7 +438,7 @@ if st.session_state.get("is_mobile", False):
     """
     <style>
     /* Apply background image + overlay to navigation bar */
-    div[data-testid="stHorizontalBlock"] {
+    section[data-testid="stHorizontalBlock"] {
         background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
                     url("https://raw.githubusercontent.com/veekstar-tech/veekstar_retail_insights/main/assets/bg_retail.jpg");
         background-size: cover !important;
@@ -448,12 +448,12 @@ if st.session_state.get("is_mobile", False):
     }
 
     /* Adjust dropdown text color for contrast */
-    div[data-testid="stHorizontalBlock"] * {
+    section[data-testid="stHorizontalBlock"] * {
         color: #f8f9fa !important;
     }
 
     /* Optional: Add subtle glow to active item */
-    div[data-testid="stHorizontalBlock"] [aria-selected="true"] {
+    section[data-testid="stHorizontalBlock"] [aria-selected="true"] {
         background-color: rgba(255,255,255,0.15) !important;
         border-radius: 6px;
     }

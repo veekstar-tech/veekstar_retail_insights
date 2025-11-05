@@ -20,6 +20,17 @@ def get_base64_image(image_path):
     with open(image_path, "rb") as f:
         encoded = base64.b64encode(f.read()).decode()
     return f"data:image/jpeg;base64,{encoded}"
+
+from streamlit_javascript import st_javascript
+
+# Detect device width (mobile vs desktop)
+if "is_mobile" not in st.session_state:
+    try:
+        width = st_javascript("window.innerWidth")
+        st.session_state.is_mobile = width < 800  # treat screens smaller than 800px as mobile
+    except:
+        st.session_state.is_mobile = False
+
 # ---------- DEVICE DETECTION (Mobile vs Desktop) ----------
 def detect_device():
     try:

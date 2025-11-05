@@ -20,7 +20,21 @@ def get_base64_image(image_path):
     with open(image_path, "rb") as f:
         encoded = base64.b64encode(f.read()).decode()
     return f"data:image/jpeg;base64,{encoded}"
+# ---------- DEVICE DETECTION (Mobile vs Desktop) ----------
+def detect_device():
+    try:
+        from streamlit_javascript import st_javascript
+        user_agent = st_javascript("navigator.userAgent")
+        if user_agent and ("Mobi" in user_agent or "Android" in user_agent or "iPhone" in user_agent):
+            return True
+        else:
+            return False
+    except Exception:
+        return False
 
+if "is_mobile" not in st.session_state:
+    st.session_state.is_mobile = detect_device()
+# ---------------------------------------------------------
 
 # -------------------------
 # Base directories (robust)
@@ -391,60 +405,57 @@ else:
 # -------------------------
 # Sidebar navigation
 # -------------------------
-# ---------- Clean Unified Navigation (Mobile + Desktop) ----------
-# Define available pages
-nav_options = [
-    "Overview", 
-    "Sales", 
-    "Customers", 
-    "Inventory", 
-    "Performance", 
-    "Forecasts", 
-    "Business Insights"
-]
+# ---------- Unified Navigation with Embedded Welcome & Logout ----------
+if st.session_state.get("is_mobile", False):
+    # Mobile view — horizontal dropdown navigation
+    options = [
+        "👋 Welcome, " + st.session_state.get("name", "Demo Reviewer 👑"),
+        "Overview",
+        "Sales",
+        "Customers",
+        "Inventory",
+        "Performance",
+        "Forecasts",
+        "Business Insights",
+        "🚪 Logout"
+    ]
 
-# Initialize session page if missing
-if "page" not in st.session_state:
-    st.session_state.page = "Overview"
+    menu = st.selectbox("Navigate", options)
 
-# Render sidebar (desktop)
-sidebar_choice = st.sidebar.radio("Navigate", nav_options, index=nav_options.index(st.session_state.page))
+    # Handle selection
+    if menu == "🚪 Logout":
+        st.session_state.clear()
+        st.success("Logged out successfully!")
+        st.rerun()
+    elif menu.startswith("👋"):
+        st.info("You’re logged in as: " + st.session_state.get("name", "Demo Reviewer 👑"))
+    else:
+        current_page = menu  # sets the active dashboard section
 
-# Render top dropdown (mobile) — unique key, no duplication
-top_choice = st.selectbox("Navigate", nav_options, index=nav_options.index(st.session_state.page), key="top_nav_mobile")
-
-# Detect which one was used last
-if sidebar_choice != st.session_state.page:
-    st.session_state.page = sidebar_choice
-elif top_choice != st.session_state.page:
-    st.session_state.page = top_choice
-
-# Assign the active page
-menu = st.session_state.page
-# ---------------------------------------------------------------
-# ---------- Mobile Header: Welcome + Logout ----------
-# Show "Welcome" and Logout only on mobile (no sidebar)
-if st._runtime.scriptrunner.get_script_run_ctx().session_data.page_config["layout"] == "wide":
-    pass  # Desktop already shows sidebar version
 else:
-    st.markdown(
-        f"""
-        <div style='background: rgba(0,0,0,0.65);
-                    padding: 0.6em 1em;
-                    border-radius: 10px;
-                    text-align: center;
-                    margin-bottom: 0.8em;
-                    color: #ffd27a;
-                    font-weight: 500;'>
-            👋 Welcome, {st.session_state.get('name', 'Executive User')} <br>
-        </div>
-        """,
+    # Desktop view — use the sidebar navigation as usual
+    st.sidebar.markdown(
+        f"<div style='font-weight:600;color:#ffd27a;'>👋 Welcome, {st.session_state.get('name', 'Demo Reviewer 👑')}</div>",
         unsafe_allow_html=True
     )
-    # Add a clean logout button below
-    logout_col = st.columns([3, 1])
-    with logout_col[1]:
-        st.button("Logout", key="mobile_logout", on_click=lambda: st.session_state.clear())
+    st.sidebar.markdown("---")
+
+    current_page = st.sidebar.radio("Navigate", [
+        "Overview",
+        "Sales",
+        "Customers",
+        "Inventory",
+        "Performance",
+        "Forecasts",
+        "Business Insights"
+    ])
+
+    if st.sidebar.button("🚪 Logout"):
+        st.session_state.clear()
+        st.success("Logged out successfully!")
+        st.rerun()
+# ------------------------------------------------------------------------
+
 # -------------------------
 # Helper: quick insight box
 # -------------------------
@@ -467,7 +478,7 @@ def quick_insight_html(title, text):
 # -------------------------
 # --- Overview
 # -------------------------
-if menu == "Overview":
+if current_page == "Overview":
     st.markdown("<h1 style='color:#ffd27a'>Overview</h1>", unsafe_allow_html=True)
     st.write("Quick executive view — totals and trends.")
 

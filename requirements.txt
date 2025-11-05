@@ -18,3 +18,4 @@ python-dotenv
 pyyaml
 gitpython
 pydeck
+streamlit-javascript

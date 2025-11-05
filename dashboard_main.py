@@ -444,31 +444,49 @@ if st.session_state.get("is_mobile", False):
 """, unsafe_allow_html=True)
     
     st.markdown("""
-       <style>
-          /* Make the dropdown background dark and stylish */
-          div[data-baseweb="select"] > div {
-            background: linear-gradient(90deg, #1c1f26, #2b2f3a) !important;
+    <style>
+        /* Style the select dropdown itself */
+        div[data-baseweb="select"] > div {
+            background-image: linear-gradient(
+                rgba(0, 0, 0, 0.55),
+                rgba(0, 0, 0, 0.55)
+            ), url("/assets/bg_retail.jpg");
+            background-size: cover !important;
+            background-position: center !important;
             color: #ffd27a !important;
             border-radius: 8px !important;
             border: 1px solid #444 !important;
-         }
-         div[data-baseweb="select"] span {
+        }
+
+        /* Dropdown text and appearance */
+        div[data-baseweb="select"] span {
+            color: #ffd27a !important;
+            font-weight: 600 !important;
+        }
+
+        /* Dropdown list (opened options) */
+        ul[role="listbox"] {
+            background-image: linear-gradient(
+                rgba(0, 0, 0, 0.65),
+                rgba(0, 0, 0, 0.65)
+            ),url("/assets/bg_retail.jpg") ;
+            background-size: cover !important;
+            background-position: center !important;
+            border-radius: 8px !important;
+            border: 1px solid #333 !important;
+        }
+
+        /* Dropdown option styles */
+        li[role="option"] {
             color: #ffd27a !important;
             font-weight: 500 !important;
-         }
-         /* Dropdown list styling */
-         ul[role="listbox"] {
-            background-color: #1c1f26 !important;
-            border-radius: 8px !important;
-         }
-         li[role="option"] {
-            color: #ffd27a !important;
-         }
-         li[role="option"]:hover {
-            background-color: #243b55 !important;
+        }
+        li[role="option"]:hover {
+            background-color: rgba(255, 210, 122, 0.1) !important;
         }
     </style>
 """, unsafe_allow_html=True)
+
     menu = st.selectbox("Navigate", options)
 
     # Handle selection

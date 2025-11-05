@@ -442,7 +442,33 @@ if st.session_state.get("is_mobile", False):
         Veekstar Navigation
     </div>
 """, unsafe_allow_html=True)
-
+    
+    st.markdown("""
+       <style>
+          /* Make the dropdown background dark and stylish */
+          div[data-baseweb="select"] > div {
+            background: linear-gradient(90deg, #1c1f26, #2b2f3a) !important;
+            color: #ffd27a !important;
+            border-radius: 8px !important;
+            border: 1px solid #444 !important;
+         }
+         div[data-baseweb="select"] span {
+            color: #ffd27a !important;
+            font-weight: 500 !important;
+         }
+         /* Dropdown list styling */
+         ul[role="listbox"] {
+            background-color: #1c1f26 !important;
+            border-radius: 8px !important;
+         }
+         li[role="option"] {
+            color: #ffd27a !important;
+         }
+         li[role="option"]:hover {
+            background-color: #243b55 !important;
+        }
+    </style>
+""", unsafe_allow_html=True)
     menu = st.selectbox("Navigate", options)
 
     # Handle selection
@@ -451,10 +477,10 @@ if st.session_state.get("is_mobile", False):
         st.success("Logged out successfully!")
         st.rerun()
     elif menu.startswith("👋"):
-        st.info("You’re logged in as: " + st.session_state.get("name", "Demo Reviewer 👑"))
+     st.info("You’re logged in as: " + st.session_state.get("name", "Demo Reviewer 👑"))
+     current_page = "Overview"  # fallback to Overview after showing welcome
     else:
-        current_page = menu  # sets the active dashboard section
-
+     current_page = menu
 else:
     # Desktop view — use the sidebar navigation as usual
     st.sidebar.markdown(

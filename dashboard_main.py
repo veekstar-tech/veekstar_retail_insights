@@ -419,6 +419,18 @@ if st.session_state.get("is_mobile", False):
         "Business Insights",
         "🚪 Logout"
     ]
+    st.markdown("""
+    <div style="
+        background: linear-gradient(90deg, #141E30, #243B55);
+        padding: 0.4em 1em;
+        border-radius: 10px;
+        color: #ffd27a;
+        font-weight: 500;
+        text-align: center;
+        margin-bottom: 0.8em;">
+        Veekstar Navigation
+    </div>
+""", unsafe_allow_html=True)
 
     menu = st.selectbox("Navigate", options)
 
@@ -528,7 +540,7 @@ if current_page == "Overview":
 # -------------------------
 # --- Sales (extended)
 # -------------------------
-elif menu == "Sales":
+elif current_page == "Sales":
     st.markdown("<h1 style='color:#ffd27a'>Sales Analytics</h1>", unsafe_allow_html=True)
     st.write("Detailed sales performance — product, region, channel and price-demand relationships.")
 
@@ -591,7 +603,7 @@ elif menu == "Sales":
 # -------------------------
 # --- Customers (extended)
 # -------------------------
-elif menu == "Customers":
+elif current_page == "Customers":
     st.markdown("<h1 style='color:#ffd27a'>Customer Insights</h1>", unsafe_allow_html=True)
     st.write("Demographics, loyalty and value-based views")
 
@@ -683,7 +695,7 @@ elif menu == "Customers":
     # End Customers
 # --- Inventory
 # -------------------------
-elif menu == "Inventory":
+elif current_page == "Inventory":
     st.markdown("<h1 style='color:#ffd27a'>Inventory & Stock Health</h1>", unsafe_allow_html=True)
     st.write("Stock levels, low-stock table and turnover rates.")
 
@@ -750,7 +762,7 @@ elif menu == "Inventory":
     # End Inventory
 # --- Performance Section
 # -------------------------
-elif menu == "Performance":
+elif current_page == "Performance":
     st.markdown("<h1 style='color:#ffd27a'>Performance Dashboard</h1>", unsafe_allow_html=True)
     st.write("Compare store and category performance, analyze profit margins, and identify top-performing regions and stores.")
 
@@ -826,7 +838,7 @@ elif menu == "Performance":
 # -------------------------
 # Forecasts — Business-as-Usual vs Veekstar Growth Model
 # -------------------------#
-elif menu == "Forecasts":
+elif current_page == "Forecasts":
     st.markdown("<h1 style='color:#ffd27a'>Forecasts — Business-as-Usual vs Veekstar Growth Model</h1>", unsafe_allow_html=True)
 
     # helper loader for forecast CSVs in outputs/
@@ -973,7 +985,7 @@ elif menu == "Forecasts":
 # -------------------------
 # --- Business Insights
 # -------------------------#
-elif menu == "Business Insights":
+elif current_page == "Business Insights":
     st.markdown("<h1 style='color:#ffd27a'>Business Insights</h1>", unsafe_allow_html=True)
     mdtxt, mdpath = load_markdown(["veekstar_business_insights.md", "outputs/veekstar_business_insights.md"])
     if mdtxt:

@@ -453,7 +453,7 @@ if st.session_state.get("is_mobile", False):
             background-image: linear-gradient(
                 rgba(0, 0, 0, 0.55),
                 rgba(0, 0, 0, 0.55)
-            ), url("https://github.com/veekstar-tech/veekstar_retail_insights/blob/main/assets/bg_retail.jpg");
+            ), url("https://raw.githubusercontent.com/veekstar-tech/veekstar_retail_insights/tree/main/assets/bg_retail.jpg");
             background-size: cover !important;
             background-position: center !important;
             color: #ffd27a !important;
@@ -472,7 +472,7 @@ if st.session_state.get("is_mobile", False):
             background-image: linear-gradient(
                 rgba(0, 0, 0, 0.65),
                 rgba(0, 0, 0, 0.65)
-            ),url("https://github.com/veekstar-tech/veekstar_retail_insights/blob/main/assets/bg_retail.jpg") ;
+            ),url("https://raw.githubusercontent.com/veekstar-tech/veekstar_retail_insights/tree/main/assets/bg_retail.jpg") ;
             background-size: cover !important;
             background-position: center !important;
             border-radius: 8px !important;

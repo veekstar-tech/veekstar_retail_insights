@@ -554,6 +554,7 @@ if st.session_state.get("is_mobile", False):
         "Performance",
         "Forecasts",
         "Business Insights",
+        "🚪 Logout"
         
     ]
 
@@ -686,7 +687,10 @@ def quick_insight_html(title, text):
       <div style="color:#fff; font-size:13px;">{text}</div>
     </div>
     """
-
+#----Logout
+if current_page == "🚪 Logout":
+    authenticator.logout("Logout", "main")
+    st.stop()
 # -------------------------
 # --- Overview
 # -------------------------
@@ -1195,7 +1199,7 @@ elif current_page == "Business Insights":
 # -------------------------------
 # 💡 Key Takeaways & Recommendations
 # -------------------------------
-elif selected_page == "Key Takeaways & Recommendations":
+elif current_page == "Key Takeaways & Recommendations":
     st.title("💡 Key Takeaways & Strategic Recommendations")
     st.markdown("""
     <p style='color:#ffd27a;font-weight:600;font-size:17px;margin-bottom:4px;'>Overall Performance</p>

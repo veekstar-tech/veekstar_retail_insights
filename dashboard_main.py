@@ -25,7 +25,43 @@ ctx = scriptrunner.get_script_run_ctx()
 if ctx is None:
     st.stop()
 from streamlit_javascript import st_javascript
+st.markdown("""
+<style>
 
+/* ===== FORCE DARK BASEWEB POPUP ===== */
+div[data-baseweb="popover"] {
+    background: rgba(10,10,10,0.96) !important;
+    border: 1px solid rgba(255,215,122,0.25) !important;
+}
+
+/* dropdown list */
+div[role="listbox"] {
+    background: rgba(10,10,10,0.96) !important;
+}
+
+/* options */
+div[role="option"] {
+    color: #ffd27a !important;
+}
+
+/* hover */
+div[role="option"]:hover {
+    background: rgba(255,215,122,0.15) !important;
+}
+
+/* selected */
+div[aria-selected="true"] {
+    background: rgba(255,215,122,0.25) !important;
+}
+
+/* REMOVE WHITE CONTAINER AROUND SELECTBOX */
+div[data-baseweb="select"] {
+    background: transparent !important;
+    border: none !important;
+}
+
+</style>
+""", unsafe_allow_html=True)
 # Detect device width (mobile vs desktop)
 if "is_mobile" not in st.session_state:
     try:
@@ -518,7 +554,7 @@ if st.session_state.get("is_mobile", False):
         "Performance",
         "Forecasts",
         "Business Insights",
-        "Logout"
+        
     ]
 
     # Mobile navigation styling (FIXED CSS TARGETS)
@@ -549,14 +585,18 @@ if st.session_state.get("is_mobile", False):
     </style>
     """, unsafe_allow_html=True)
 
-    menu = st.selectbox("Navigate", options)
+    menu = st.radio(
+    "Navigate",
+    options,
+    horizontal=True
+)
 
     # -------------------------
     # Handle selection (FIXED LOGIC)
     # -------------------------
     if menu == "Logout":
-        st.session_state.clear()
-        st.rerun()
+        authenticator.logout("Logout", "sidebar")
+        st.stop()
 
     else:
         current_page = menu
@@ -627,9 +667,7 @@ else:
     # -------------------------
     # Logout (FIXED - SINGLE SOURCE)
     # -------------------------
-    if st.sidebar.button("🚪 Logout"):
-        st.session_state.clear()
-        st.rerun()
+    
 # -------------------------
 # Helper: quick insight box
 # -------------------------

@@ -51,45 +51,67 @@ st.markdown(f"""
 <style>
 
 /* =========================
-   APP BACKGROUND
+   FORCE FULL APP BACKGROUND
 ========================= */
 .stApp {{
     {bg_css}
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    color: #ffd27a !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-attachment: fixed !important;
 }}
 
 /* =========================
-   SIDEBAR FIX (SAFE VERSION)
+   🚨 NUCLEAR SIDEBAR FIX (REMOVES ALL WHITE LAYERS)
 ========================= */
-section[data-testid="stSidebar"] {{
-    background: url("assets/bg_retail.jpg") center/cover no-repeat !important;
-    position: relative;
+
+/* kill ALL sidebar backgrounds (every layer Streamlit creates) */
+section[data-testid="stSidebar"],
+section[data-testid="stSidebar"] * ,
+section[data-testid="stSidebarContent"],
+div[data-testid="stSidebarNav"],
+nav,
+ul {{
+    background: transparent !important;
+    box-shadow: none !important;
 }}
 
+/* force ONLY image background */
+section[data-testid="stSidebar"] {{
+    background: url("assets/bg_retail.jpg") center/cover no-repeat !important;
+}}
+
+/* overlay for readability */
 section[data-testid="stSidebar"]::before {{
     content: "";
     position: absolute;
     inset: 0;
-    background: rgba(0,0,0,0.40);
+    background: rgba(0,0,0,0.35);
     z-index: 0;
 }}
 
+/* keep content above overlay */
 section[data-testid="stSidebar"] > div {{
     position: relative;
     z-index: 1;
 }}
 
-section[data-testid="stSidebarContent"],
-div[data-testid="stSidebarNav"],
-section[data-testid="stSidebarContent"] .block-container {{
+/* =========================
+   FORCE REMOVE STREAMLIT WHITE BLOCKS (IMPORTANT)
+========================= */
+div[data-testid="stSidebarContent"] {{
+    background: transparent !important;
+}}
+
+div[data-testid="stSidebarNav"] {{
+    background: transparent !important;
+}}
+
+.block-container {{
     background: transparent !important;
 }}
 
 /* =========================
-   DROPDOWN FIX
+   DROPDOWN DARK FIX
 ========================= */
 div[data-baseweb="select"] > div {{
     background: rgba(10,10,10,0.75) !important;
@@ -98,7 +120,7 @@ div[data-baseweb="select"] > div {{
 
 div[data-baseweb="popover"],
 div[role="listbox"] {{
-    background: rgba(10,10,10,0.95) !important;
+    background: rgba(10,10,10,0.96) !important;
 }}
 
 div[role="option"] {{
@@ -111,7 +133,6 @@ div[role="option"]:hover {{
 
 </style>
 """, unsafe_allow_html=True)
-
 # ---------------------------
 # Authentication Setup
 # ---------------------------
@@ -168,7 +189,7 @@ if "mobile_logout" in st.session_state and st.session_state["mobile_logout"]:
 # ---------------------------
 if authentication_status:
     st.sidebar.success(f"Welcome, {name or username} 👑")
-    authenticator.logout("Logout", "sidebar")
+    authenticator.logout("🚪 Logout", "sidebar", key="main_logout")
 
     dashboard_path = BASE / "dashboard_main.py"
     if dashboard_path.exists():

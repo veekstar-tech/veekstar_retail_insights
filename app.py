@@ -1,129 +1,119 @@
 # app.py - Veekstar Retail Intelligence (Executive Overview)
 # Run: streamlit run app.py
+
 import streamlit as st
 from pathlib import Path
 import yaml
 from yaml.loader import SafeLoader
 import streamlit_authenticator as stauth
 import importlib.util
+import base64
+
 # ---------------------------
-#  Paths
+# Paths
 # ---------------------------
 BASE = Path(__file__).resolve().parent
 ASSETS = BASE / "assets"
 BG_IMAGE = ASSETS / "bg_retail.jpg"
+
 # ---------------------------
-#  Load config.yaml (Credentials)
+# Load config.yaml (Credentials)
 # ---------------------------
 with open(BASE / "config.yaml") as file:
     config = yaml.load(file, Loader=SafeLoader)
-# ---------------------------
-#  Page Config
-# ---------------------------
-st.set_page_config(page_title="Veekstar Retail Intelligence", page_icon="💫", layout="wide")
-# ---------------------------
-#  Inject Custom CSS
-# ---------------------------
-# -----------------------------------------------
-# Login Page Styling + Background (Veekstar Gold Glow)
-# -----------------------------------------------
-import base64
-from pathlib import Path
 
-# Path to your background image
-BG_IMAGE = Path(__file__).resolve().parent / "assets" / "bg_retail.jpg"
+# ---------------------------
+# Page Config
+# ---------------------------
+st.set_page_config(
+    page_title="Veekstar Retail Intelligence",
+    page_icon="💫",
+    layout="wide"
+)
 
-# Safely embed the background image in base64
+# ---------------------------
+# Background Image (Safe)
+# ---------------------------
 if BG_IMAGE.exists():
     with open(BG_IMAGE, "rb") as img_file:
         b64_img = base64.b64encode(img_file.read()).decode()
-    bg_css = f"background: linear-gradient(120deg, rgba(0,0,0,0.92), rgba(12,8,2,0.75)), url('data:image/jpeg;base64,{b64_img}');"
+    bg_css = f"""
+        background: linear-gradient(120deg, rgba(0,0,0,0.92), rgba(12,8,2,0.75)),
+        url('data:image/jpeg;base64,{b64_img}');
+    """
 else:
     bg_css = "background: linear-gradient(120deg, rgba(0,0,0,0.92), rgba(12,8,2,0.75));"
 
+# ---------------------------
+# GLOBAL CSS (FIXED + FINAL)
+# ---------------------------
 st.markdown(f"""
-    <style>
-    /* ---- Background & shimmer ---- */
-    .stApp {{
-        {bg_css}
-        background-size: cover;
-        background-position: center center;
-        background-attachment: fixed;
-        color: #ffd27a !important;
-        font-family: 'Poppins', sans-serif;
-        animation: veek_shimmer 16s ease-in-out infinite alternate;
-    }}
+<style>
 
-    @keyframes veek_shimmer {{
-        0% {{ filter: brightness(0.9) saturate(0.95); }}
-        50% {{ filter: brightness(1.12) saturate(1.08); }}
-        100% {{ filter: brightness(0.95) saturate(1); }}
-    }}
-
-    /* ---- Login Card ---- */
-    .stForm, .stTextInput, .stTextInput > div > div > input {{
-        background: rgba(0,0,0,0.55) !important;
-        border: 1px solid rgba(255,215,100,0.25) !important;
-        border-radius: 12px !important;
-        color: #ffd27a !important;
-        font-weight: 500;
-        transition: all 0.25s ease-in-out;
-    }}
-
-    .stTextInput > div > div > input::placeholder {{
-        color: rgba(255,215,100,0.6) !important;
-    }}
-
-    /* ---- Focus Glow on Input ---- */
-    .stTextInput > div > div > input:focus {{
-        border: 1px solid #ffd27a !important;
-        box-shadow: 0 0 14px rgba(255,210,122,0.55) !important;
-        transform: scale(1.02);
-    }}
-
-    /* ---- Login Button with Gold Glow & Hover Pop ---- */
-    div.stButton > button {{
-        background: linear-gradient(90deg, #c9a437, #ffd27a, #c9a437);
-        color: #000 !important;
-        font-weight: 700 !important;
-        border: none !important;
-        border-radius: 12px !important;
-        padding: 0.6em 1.8em !important;
-        cursor: pointer !important;
-        transition: all 0.25s ease-in-out;
-        box-shadow: 0 0 15px rgba(255,210,122,0.55);
-        animation: buttonGlow 3s ease-in-out infinite alternate;
-    }}
-
-    div.stButton > button:hover {{
-        transform: scale(1.08) translateY(-3px);
-        background: linear-gradient(90deg, #ffd27a, #c9a437, #ffd27a);
-        box-shadow: 0 0 25px rgba(255,215,0,0.95);
-        transition: all 0.25s ease-in-out;
-    }}
-
-    @keyframes buttonGlow {{
-        0% {{ box-shadow: 0 0 12px rgba(255,210,122,0.45); }}
-        50% {{ box-shadow: 0 0 26px rgba(255,210,122,0.95); }}
-        100% {{ box-shadow: 0 0 12px rgba(255,210,122,0.45); }}
-    }}
-    /* ---- Sidebar Styling (Match Main Background) ---- */
-[data-testid="stSidebar"] {{
-    background: rgba(0, 0, 0, 0.75) !important;
-    backdrop-filter: blur(8px);
-    border-right: 1px solid rgba(255,215,100,0.25);
-}}
-
-[data-testid="stSidebar"] * {{
+/* =========================
+   APP BACKGROUND
+========================= */
+.stApp {{
+    {bg_css}
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
     color: #ffd27a !important;
-    font-family: 'Poppins', sans-serif;
 }}
 
-    </style>
+/* =========================
+   SIDEBAR FIX (SAFE VERSION)
+========================= */
+section[data-testid="stSidebar"] {{
+    background: url("assets/bg_retail.jpg") center/cover no-repeat !important;
+    position: relative;
+}}
+
+section[data-testid="stSidebar"]::before {{
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.40);
+    z-index: 0;
+}}
+
+section[data-testid="stSidebar"] > div {{
+    position: relative;
+    z-index: 1;
+}}
+
+section[data-testid="stSidebarContent"],
+div[data-testid="stSidebarNav"],
+section[data-testid="stSidebarContent"] .block-container {{
+    background: transparent !important;
+}}
+
+/* =========================
+   DROPDOWN FIX
+========================= */
+div[data-baseweb="select"] > div {{
+    background: rgba(10,10,10,0.75) !important;
+    color: #ffd27a !important;
+}}
+
+div[data-baseweb="popover"],
+div[role="listbox"] {{
+    background: rgba(10,10,10,0.95) !important;
+}}
+
+div[role="option"] {{
+    color: #ffd27a !important;
+}}
+
+div[role="option"]:hover {{
+    background: rgba(255,215,100,0.15) !important;
+}}
+
+</style>
 """, unsafe_allow_html=True)
 
 # ---------------------------
-#  Authentication Setup
+# Authentication Setup
 # ---------------------------
 authenticator = stauth.Authenticate(
     config['credentials'],
@@ -131,13 +121,9 @@ authenticator = stauth.Authenticate(
     config['cookie']['key'],
     config['cookie']['expiry_days'],
 )
-# ---------------------------
-# ---------------------------
-#  Login Logic (Updated for Streamlit-Authenticator v0.4+)
-# ---------------------------
 
 # ---------------------------
-#  Updated Login Logic (for Streamlit Authenticator v0.4+)
+# Login Logic
 # ---------------------------
 try:
     authenticator.login(
@@ -150,32 +136,35 @@ try:
         location="main"
     )
 
-    # Access session state safely
     authentication_status = st.session_state.get("authentication_status", None)
     name = st.session_state.get("name", "")
     username = st.session_state.get("username", "")
+
 except Exception as e:
     st.error(f"Authentication error: {e}")
     authentication_status = None
     name = username = ""
 
-
-# Show demo note ONLY on the login screen
+# ---------------------------
+# Login Screen Note
+# ---------------------------
 if authentication_status is None:
-    st.markdown(
-        """
-        <div style='margin-top:20px; padding:10px; border-radius:8px; background:rgba(255,255,255,0.08); color:#ccc; font-size:13px;'>
-        <b>Demo credentials:</b> <code>guest</code> / <code>veekstar2025</code><br>
-        <i>For reviewers only — in production, user-level authentication (e.g. OAuth / Firebase) would be implemented for executive-only access.</i>
+    st.markdown("""
+        <div style='margin-top:20px; padding:10px;
+        border-radius:8px; background:rgba(255,255,255,0.08);
+        color:#ccc; font-size:13px;'>
+        <b>Demo credentials:</b> <code>guest</code> / <code>veekstar2025</code>
         </div>
-        """,
-        unsafe_allow_html=True
-    )
-# If mobile logout button was pressed, also log out authenticator session
+    """, unsafe_allow_html=True)
+
+# ---------------------------
+# Logout fix
+# ---------------------------
 if "mobile_logout" in st.session_state and st.session_state["mobile_logout"]:
     authenticator.logout("Logout", "main")
+
 # ---------------------------
-#  Conditional Dashboard Load
+# Dashboard Loader (UNCHANGED LOGIC)
 # ---------------------------
 if authentication_status:
     st.sidebar.success(f"Welcome, {name or username} 👑")
@@ -183,16 +172,19 @@ if authentication_status:
 
     dashboard_path = BASE / "dashboard_main.py"
     if dashboard_path.exists():
-      spec = importlib.util.spec_from_file_location("dashboard_main", dashboard_path)
-      dashboard = importlib.util.module_from_spec(spec)
-# make authenticator available inside dashboard_main as a global variable
-      dashboard.authenticator = authenticator
-      spec.loader.exec_module(dashboard)
+        spec = importlib.util.spec_from_file_location("dashboard_main", dashboard_path)
+        dashboard = importlib.util.module_from_spec(spec)
+
+        dashboard.authenticator = authenticator
+        spec.loader.exec_module(dashboard)
 
     else:
         st.error("❌ Dashboard file not found (dashboard_main.py missing).")
+
 elif authentication_status is False:
     st.error("❌ Incorrect username or password.")
+
 else:
-    st.markdown("<h2 style='text-align:center;'>💫 Welcome to Veekstar Retail Intelligence</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align:center;'>💫 Welcome to Veekstar Retail Intelligence</h2>",
+                unsafe_allow_html=True)
     st.info("Please log in to continue.")

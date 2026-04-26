@@ -223,7 +223,86 @@ div[data-testid="stVerticalBlock"].veek-active,
 
 # inject CSS
 st.markdown(f"<style>{css}</style>", unsafe_allow_html=True)
+st.markdown("""
+<style>
 
+/* =========================
+   NAV DROPDOWN BACKGROUND
+   ========================= */
+
+/* Main selectbox container */
+div[data-baseweb="select"] > div {
+    background: linear-gradient(
+        rgba(0,0,0,0.65),
+        rgba(0,0,0,0.65)
+    ),
+    url("assets/bg_retail.jpg");
+
+    background-size: cover;
+    background-position: center;
+
+    border-radius: 10px;
+    border: 1px solid rgba(255,215,100,0.2);
+}
+
+/* Text inside dropdown */
+div[data-baseweb="select"] * {
+    color: #ffd27a !important;
+}
+
+/* Dropdown menu list */
+ul[role="listbox"] {
+    background: linear-gradient(
+        rgba(0,0,0,0.85),
+        rgba(0,0,0,0.85)
+    ),
+    url("assets/bg_retail.jpg");
+
+    background-size: cover;
+    background-position: center;
+
+    border-radius: 10px;
+}
+
+/* Options */
+li[role="option"] {
+    color: #ffd27a;
+}
+
+/* Hover */
+li[role="option"]:hover {
+    background-color: rgba(255,215,100,0.15);
+}
+
+</style>
+""", unsafe_allow_html=True)
+st.markdown("""
+<style>
+
+/* =========================
+   SIDEBAR BACKGROUND FIX
+   ========================= */
+
+section[data-testid="stSidebar"] {
+    background: linear-gradient(
+        rgba(0,0,0,0.65),
+        rgba(0,0,0,0.65)
+    ),
+    url("assets/bg_retail.jpg");
+
+    background-size: cover;
+    background-position: center;
+
+    border-right: 1px solid rgba(255,215,100,0.2);
+}
+
+/* Sidebar text */
+section[data-testid="stSidebar"] * {
+    color: #ffd27a !important;
+}
+
+</style>
+""", unsafe_allow_html=True)
 # Small JS to add/remove "veek-active" class for hover/focus to create pulsing glow on cards + nav
 js = dedent("""
   const addHover = (el) => {
@@ -419,11 +498,19 @@ else:
 # -------------------------
 # Sidebar navigation
 # -------------------------
-# ---------- Unified Navigation with Embedded Welcome & Logout ----------
+
+# ---------- Unified Navigation (FIXED STRUCTURE) ----------
+
+def get_username():
+    return st.session_state.get("name", "Demo Reviewer 👑")
+
+
+# -------------------------
+# MOBILE VIEW
+# -------------------------
 if st.session_state.get("is_mobile", False):
-    # Mobile view — horizontal dropdown navigation
+
     options = [
-        "👋 Welcome, " + st.session_state.get("name", "Demo Reviewer 👑"),
         "Overview",
         "Sales",
         "Customers",
@@ -431,105 +518,118 @@ if st.session_state.get("is_mobile", False):
         "Performance",
         "Forecasts",
         "Business Insights",
-        "🚪 Logout"
+        "Logout"
     ]
-    # Custom style for navigation background
-    st.markdown(
-    """
+
+    # Mobile navigation styling (FIXED CSS TARGETS)
+    st.markdown("""
     <style>
-    /* Apply background image + overlay to navigation bar */
+
+    /* Mobile nav container fix */
     section[data-testid="stHorizontalBlock"] {
-        background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+        background: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)),
                     url("https://raw.githubusercontent.com/veekstar-tech/veekstar_retail_insights/main/assets/bg_retail.jpg");
         background-size: cover !important;
         background-position: center !important;
         border-radius: 10px;
-        padding: 8px 16px;
+        padding: 10px;
     }
 
-    /* Adjust dropdown text color for contrast */
+    /* Text color fix */
     section[data-testid="stHorizontalBlock"] * {
-        color: #f8f9fa !important;
+        color: #ffd27a !important;
     }
 
-    /* Optional: Add subtle glow to active item */
+    /* Active item highlight */
     section[data-testid="stHorizontalBlock"] [aria-selected="true"] {
-        background-color: rgba(255,255,255,0.15) !important;
+        background-color: rgba(255,215,100,0.18) !important;
         border-radius: 6px;
     }
+
     </style>
-    """,
-    unsafe_allow_html=True
-)
-
-    
-
-# --- END: NAV + SIDEBAR BACKGROUND IMAGE (robust) ---
+    """, unsafe_allow_html=True)
 
     menu = st.selectbox("Navigate", options)
 
-    # Handle selection
-    if menu == "🚪 Logout":
+    # -------------------------
+    # Handle selection (FIXED LOGIC)
+    # -------------------------
+    if menu == "Logout":
         st.session_state.clear()
-        st.success("Logged out successfully!")
         st.rerun()
-    elif menu.startswith("👋"):
-     st.info("You’re logged in as: " + st.session_state.get("name", "Demo Reviewer 👑"))
-     current_page = "Overview"  # fallback to Overview after showing welcome
+
     else:
-     current_page = menu
+        current_page = menu
+
+
+# -------------------------
+# DESKTOP VIEW
+# -------------------------
 else:
-    # Desktop view — use the sidebar navigation as usual
+
     st.sidebar.markdown(
-        f"<div style='font-weight:600;color:#ffd27a;'>👋 Welcome, {st.session_state.get('name', 'Demo Reviewer 👑')}</div>",
+        f"""
+        <div style="
+            font-weight:600;
+            color:#ffd27a;
+            padding:8px 0;
+        ">
+        👋 Welcome, {get_username()}
+        </div>
+        """,
         unsafe_allow_html=True
     )
+
     st.sidebar.markdown("---")
 
-    current_page = st.sidebar.radio("Navigate", [
-        "Overview",
-        "Sales",
-        "Customers",
-        "Inventory",
-        "Performance",
-        "Forecasts",
-        "Business Insights"
-    ])
-# Custom style for navigation background
-    t.markdown(
-    """
+    current_page = st.sidebar.radio(
+        "Navigate",
+        [
+            "Overview",
+            "Sales",
+            "Customers",
+            "Inventory",
+            "Performance",
+            "Forecasts",
+            "Business Insights"
+        ]
+    )
+
+    # -------------------------
+    # Sidebar background fix (CORRECTED TARGET)
+    # -------------------------
+    st.markdown("""
     <style>
-    /* Apply background image + overlay to navigation bar */
-    div[data-testid="stHorizontalBlock"] {
-        background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
-                    url("https://raw.githubusercontent.com/veekstar-tech/veekstar_retail_insights/main/assets/bg_retail.jpg");
-        background-size: cover !important;
-        background-position: center !important;
-        border-radius: 10px;
-        padding: 8px 16px;
+
+    /* Sidebar background image */
+    section[data-testid="stSidebar"] {
+        background: url("https://raw.githubusercontent.com/veekstar-tech/veekstar_retail_insights/main/assets/bg_retail.jpg") center/cover no-repeat !important;
+        position: relative;
     }
 
-    /* Adjust dropdown text color for contrast */
-    div[data-testid="stHorizontalBlock"] * {
-        color: #f8f9fa !important;
+    /* Lighter overlay (FIXED - NOT TOO DARK) */
+    section[data-testid="stSidebar"]::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: rgba(0,0,0,0.45);
+        z-index: 0;
     }
 
-    /* Optional: Add subtle glow to active item */
-    div[data-testid="stHorizontalBlock"] [aria-selected="true"] {
-        background-color: rgba(255,255,255,0.15) !important;
-        border-radius: 6px;
+    section[data-testid="stSidebar"] > div {
+        position: relative;
+        z-index: 1;
     }
+
     </style>
-    """,
-    unsafe_allow_html=True
-)
+    """, unsafe_allow_html=True)
 
+    # -------------------------
+    # Logout (FIXED - SINGLE SOURCE)
+    # -------------------------
     if st.sidebar.button("🚪 Logout"):
         st.session_state.clear()
-        st.success("Logged out successfully!")
         st.rerun()
-# ------------------------------------------------------------------------
-
 # -------------------------
 # Helper: quick insight box
 # -------------------------
@@ -577,7 +677,7 @@ if current_page == "Overview":
 
     # Monthly revenue trend
     if 'date' in df_master.columns:
-        monthly = (df_master.set_index('date').resample('M').sum(numeric_only=True).reset_index())
+        monthly = (df_master.set_index('date').resample('ME').sum(numeric_only=True).reset_index())
         if 'revenue' in monthly.columns:
             fig = px.bar(monthly, x='date', y='revenue', labels={'date':'Month','revenue':'Revenue'},
                          title="Monthly Revenue Trend", height=380)

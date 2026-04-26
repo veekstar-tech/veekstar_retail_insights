@@ -43,32 +43,46 @@ This system includes a secure login layer to ensure controlled access:
 
 ##  Dashboard Preview
 
-### Overview Dashboard
+## 📸 Dashboard Preview
 
-![Overview](assets/screenshots/overview.jpg)
-
----
-
-### Sales Intelligence
-
-![Sales](assets/screenshots/sales.jpg)
+A visual walkthrough of the Veekstar Retail Intelligence system, showcasing key analytical modules and decision-support dashboards.
 
 ---
 
-### Forecasting Engine
+### 📊 Overview Dashboard
+![Overview](https://github.com/veekstar-tech/veekstar_retail_insights/blob/main/assets/screenshots/Overview.JPG?raw=true)
 
-![Forecast 1](assets/screenshots/forecast1.jpg)
+Executive-level summary of business performance, highlighting core KPIs, trends, and overall retail health indicators.
 
-![Forecast 2](assets/screenshots/forecast2.jpg)
+---
+
+###  Sales Analytics
+![Sales](https://github.com/veekstar-tech/veekstar_retail_insights/blob/main/assets/screenshots/Sales.JPG?raw=true)
+
+Breakdown of sales performance across time periods, categories, and revenue drivers to support strategic decision-making.
 
 ---
 
-### Performance Analytics
+###  Forecasting Models
 
-![Performance](assets/screenshots/performance.jpg)
+#### Model 1 — Baseline Forecast
+![Forecast 1](https://github.com/veekstar-tech/veekstar_retail_insights/blob/main/assets/screenshots/forecast1.JPG?raw=true)
+
+A foundational forecasting model used to project demand trends based on historical sales patterns.
+
+#### Model 2 — Enhanced Forecast (Optimized Model)
+![Forecast 2](https://github.com/veekstar-tech/veekstar_retail_insights/blob/main/assets/screenshots/forecast2.JPG?raw=true)
+
+An improved predictive model incorporating refined signals for better accuracy and business responsiveness.
 
 ---
-## 📖 Project Story
+
+###  Performance Analysis
+![Performance](https://github.com/veekstar-tech/veekstar_retail_insights/blob/main/assets/screenshots/performance.JPG?raw=true)
+
+Deep dive into operational performance metrics, helping identify growth opportunities and inefficiencies.
+---
+##  Project Story
 
 Retail businesses often struggle with understanding their data in a meaningful way. Most of the time, information is scattered across spreadsheets, making it difficult to track performance, identify trends, or make fast decisions.
 
